@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model clicks {
+  id        Int      @id @default(autoincrement())
+  workId    Int
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  works     works    @relation(fields: [workId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model follows {
+  id                              Int      @id @default(autoincrement())
+  followerId                      Int
+  followedId                      Int
+  createdAt                       DateTime @default(now()) @db.Timestamp(6)
+  users_follows_followedIdTousers users    @relation("follows_followedIdTousers", fields: [followedId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_follows_followerIdTousers users    @relation("follows_followerIdTousers", fields: [followerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model genres {
+  id        Int      @id @default(autoincrement())
+  genre     String   @db.VarChar(20)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  works     works[]
+}
+
+model profile {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  instagram   String?  @unique
+  description String?  @db.VarChar(5000)
+  photo       String?
+  artistName  String?  @db.VarChar(50)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @db.Timestamp(6)
+  users       users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id                                Int       @id @default(autoincrement())
+  name                              String    @unique @db.VarChar(50)
+  email                             String    @unique @db.VarChar(200)
+  password                          String    @db.VarChar(50)
+  isConfirmed                       Boolean   @default(false)
+  createdAt                         DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                         DateTime  @default(now()) @db.Timestamp(6)
+  follows_follows_followedIdTousers follows[] @relation("follows_followedIdTousers")
+  follows_follows_followerIdTousers follows[] @relation("follows_followerIdTousers")
+  profile                           profile[]
+  works                             works[]
+}
+
+model works {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  workName  String   @db.VarChar(50)
+  file      String
+  genreId   Int
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  clicks    clicks[]
+  genres    genres   @relation(fields: [genreId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users     users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
