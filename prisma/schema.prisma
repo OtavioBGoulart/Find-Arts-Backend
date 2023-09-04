@@ -9,8 +9,10 @@ datasource db {
 
 model clicks {
   id        Int      @id @default(autoincrement())
+  userId    Int
   workId    Int
   createdAt DateTime @default(now()) @db.Timestamp(6)
+  users     users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   works     works    @relation(fields: [workId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -43,15 +45,18 @@ model profile {
 }
 
 model users {
-  id                                Int       @id @default(autoincrement())
-  name                              String    @unique @db.VarChar(50)
-  email                             String    @unique @db.VarChar(200)
-  password                          String    @db.VarChar(50)
-  isConfirmed                       Boolean   @default(false)
-  createdAt                         DateTime  @default(now()) @db.Timestamp(6)
-  updatedAt                         DateTime  @default(now()) @db.Timestamp(6)
-  follows_follows_followedIdTousers follows[] @relation("follows_followedIdTousers")
-  follows_follows_followerIdTousers follows[] @relation("follows_followerIdTousers")
+  id                                Int        @id @default(autoincrement())
+  name                              String     @unique @db.VarChar(50)
+  email                             String     @unique @db.VarChar(200)
+  password                          String     @db.VarChar(50)
+  isConfirmed                       Boolean    @default(false)
+  createdAt                         DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt                         DateTime   @default(now()) @db.Timestamp(6)
+  clicks                            clicks[]
+  comments                          comments[]
+  follows_follows_followedIdTousers follows[]  @relation("follows_followedIdTousers")
+  follows_follows_followerIdTousers follows[]  @relation("follows_followerIdTousers")
+  posts                             posts[]
   profile                           profile[]
   works                             works[]
 }
@@ -67,4 +72,23 @@ model works {
   clicks    clicks[]
   genres    genres   @relation(fields: [genreId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users     users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model comments {
+  id        Int      @id @default(autoincrement())
+  content   String   @db.VarChar(2000)
+  postId    Int
+  userId    Int
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  posts     posts    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users     users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model posts {
+  id        Int        @id @default(autoincrement())
+  content   String     @db.VarChar(2000)
+  userId    Int
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  comments  comments[]
+  users     users      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
