@@ -18,7 +18,7 @@ function validate(schema: ObjectSchema, type: "body" | "params") {
 
     if (!error) {
       console.log("tudo certo");
-      return res.sendStatus(200);
+      //return res.sendStatus(200);
       next();
     } else {
       res.status(httpStatus.BAD_REQUEST).send((error.details.map((d) => d.message)));
