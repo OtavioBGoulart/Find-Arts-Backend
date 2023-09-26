@@ -5,7 +5,7 @@ export async function usersPost(req: Request, res: Response) {
     const { name, email, password} = req.body;
 
     try {
-        const result = await createUser({ email, password });
+        const result = await createUser({ name, email, password });
         res.send(result).status(200);
     } catch (error) {
         //console.log(error);
