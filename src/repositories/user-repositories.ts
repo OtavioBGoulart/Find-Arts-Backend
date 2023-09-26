@@ -27,13 +27,16 @@ async function findByName(name: string, select?: Prisma.usersSelect) {
     return prisma.users.findUnique(params);
 }
 
-async function createUser(data: Prisma.usersUncheckedCreateInput) {
+async function createUser( { name, email, password} : Prisma.usersUncheckedCreateInput ) {
 
     return prisma.users.create({
-        data,
+      data: {
+        name,
+        email, 
+        password
+      },
     });
-
-}
+  }
 
 export const userRepository = {
     findByEmail,

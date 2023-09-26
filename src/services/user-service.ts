@@ -6,16 +6,20 @@ import bcrypt from "bcrypt"
 export async function createUser({ name, email, password } : CreateUserParams) : Promise<any> {
 
     await validateUniqueEmail(email);
+    await validateUniqueName(name);
 
     const hashPassword = await bcrypt.hash(password, 12);
 
-    return email;
+    const result = await userRepository.createUser({ name, email, password: hashPassword })
+
+    return result;
 
 }
 
 async function validateUniqueEmail(email: string) {
 
     const emailAlreadyExists = await userRepository.findByEmail(email);
+    console.log(emailAlreadyExists)
     if (emailAlreadyExists) throw new Error ("Email já existe");
 
 }
