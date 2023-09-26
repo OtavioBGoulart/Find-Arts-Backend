@@ -1,5 +1,5 @@
 import { users } from "@prisma/client"
-import { findByEmail } from "repositories/user.repositories";
+import { findByEmail } from "repositories/user-repositories";
 
 
 export async function createUser({ email, password } : CreateUserParams) : Promise<any> {

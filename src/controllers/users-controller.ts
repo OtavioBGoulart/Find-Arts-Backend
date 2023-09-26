@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser } from "services/userService";
+import { createUser } from "services/user-service";
 
 export async function usersPost(req: Request, res: Response) {
     const { name, email, password} = req.body;
@@ -9,7 +9,7 @@ export async function usersPost(req: Request, res: Response) {
         const result = await createUser({ email, password });
         res.send(result).status(200);
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         return res.sendStatus(404);
     }
     
