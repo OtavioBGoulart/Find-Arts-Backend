@@ -1,10 +1,13 @@
 import { users } from "@prisma/client"
-import { findByEmail } from "repositories/user-repositories";
+import { userRepository } from "repositories/user-repositories";
+import bcrypt from "bcrypt"
 
 
 export async function createUser({ email, password } : CreateUserParams) : Promise<any> {
 
     await validateUniqueEmail(email);
+
+    const hashPassword = await bcrypt.hash(password, 12);
 
     return email;
 
@@ -12,7 +15,7 @@ export async function createUser({ email, password } : CreateUserParams) : Promi
 
 async function validateUniqueEmail(email: string) {
 
-    const emailAlreadyExists = await findByEmail(email);
+    const emailAlreadyExists = await userRepository.findByEmail(email);
     if (emailAlreadyExists) throw new Error ("Email já existe");
 
 }

@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "config";
 
-export async function findByEmail(email: string, select?: Prisma.usersSelect) {
+async function findByEmail(email: string, select?: Prisma.usersSelect) {
 
     const params : Prisma.usersFindUniqueArgs = {
         where: {
@@ -14,3 +14,15 @@ export async function findByEmail(email: string, select?: Prisma.usersSelect) {
     return prisma.users.findUnique(params);
 }
 
+async function createUser(data: Prisma.usersUncheckedCreateInput) {
+
+    return prisma.users.create({
+        data,
+    });
+
+}
+
+export const userRepository = {
+    findByEmail,
+    createUser
+}
